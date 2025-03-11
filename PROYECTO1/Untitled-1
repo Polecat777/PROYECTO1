@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>CLIENTES</h1>
+    <form action="clientes.php" method="post">
+        NO.CUENTA: <input type="text" name="no_cuenta"> <br>
+        NOMBRE: <input type="text" name="nombre"> <br>
+        DOMICILIO: <input type="text" name="domicilio"> <br>
+        SALDO: <input type="text" name="saldo"> <br><br>
+        <input type="submit" value="REGISTRAR" name="registrar">
+        <input type="submit" value="CONSULTA" name="consulta">
+    </form>
+
+    <?php
+    if (isset($_POST['registrar'])) {
+        echo "<h4>DATOS REGISTRADOS</h4>";
+        $no_cuenta = $_POST['no_cuenta'];
+        $nombre = $_POST['nombre'];
+        $domicilio = $_POST['domicilio'];
+        $saldo = $_POST['saldo'];
+
+        $conexion = mysqli_connect("localhost", "root", "", "banco") or die("Error en la conexión con el servidor");
+        $sql = "INSERT INTO clientes VALUES ('$no_cuenta','$nombre','$domicilio','$saldo')";
+        $resultado = mysqli_query($conexion, $sql) or die("Error en la conexión a la tabla");
+        mysqli_close($conexion);
+
+        echo "NO. DE CUENTA: " . $no_cuenta . "<br>";
+        echo "NOMBRE: " . $nombre . "<br>";
+        echo "DOMICILIO: " . $domicilio . "<br>";
+        echo "SALDO: " . $saldo . "<br>";
+    }
+
+    if (isset($_POST['consulta'])) {
+        $conexion = mysqli_connect("localhost", "root", "", "banco") or die("Error en la conexión con el servidor");
+        $sql = "SELECT * FROM clientes";
+        $resultado = mysqli_query($conexion, $sql) or die("ERROR EN LA TABLA");
+
+        echo "<h4>RESULTADOS DE LA CONSULTA</h4>";
+        echo "<table>";
+        echo "<tr><th>NO. CUENTA</th><th>NOMBRE</th><th>DOMICILIO</th><th>SALDO</th></tr>";
+        while ($consultado = mysqli_fetch_array($resultado)) {
+            echo "<tr>";
+            echo "<td>" . $consultado['no_cuenta'] . "</td>";
+            echo "<td>" . $consultado['nombre'] . "</td>";
+            echo "<td>" . $consultado['domicilio'] . "</td>";
+            echo "<td>" . $consultado['saldo'] . "</td>";
+            echo "</tr>";
+        }
+        echo "</table>";
+
+        mysqli_close($conexion);
+    }
+    ?>
+</body>
+</html>
